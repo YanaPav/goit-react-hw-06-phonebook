@@ -9,7 +9,7 @@ export const ContactList = ({ contacts }) => {
     const dispatch = useDispatch()
     return (
         <ul className={css.contsctList}>
-            {contacts.map(({name, number, id}) => {
+            {contacts?.map(({name, number, id}) => {
                 return <li key={id}>{name}: {number} <button type="button" onClick={() => dispatch(deleteContact(id))}>Delete</button></li>
             })}
         </ul>
