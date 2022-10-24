@@ -1,11 +1,29 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
-import PropTypes from 'prop-types';
 import css from './ContactForm.module.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
 
-export const ContactForm = ({ addContact }) => {
+export const ContactForm = () => {
+  const { contacts } = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+
+  const isDuplicate = ({ name }) => {
+    const result = contacts?.find(
+      contactItem => contactItem.name.toLowerCase() === name.toLowerCase()
+    );
+    return result;
+  };
+
+  const addContactToStore = contactObject => {
+    if (isDuplicate(contactObject)) {
+      return alert(`${contactObject.name} is alredy in contacts`);
+    }
+
+    return dispatch(addContact(contactObject));
+  };
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -23,7 +41,7 @@ export const ContactForm = ({ addContact }) => {
       id: nanoid(),
     };
 
-    addContact(contactObj);
+    addContactToStore(contactObj);
     resetState();
   };
 
@@ -61,8 +79,4 @@ export const ContactForm = ({ addContact }) => {
       <button type="submit">Add contact</button>
     </form>
   );
-};
-
-ContactForm.propTypes = {
-  addContact: PropTypes.func.isRequired,
 };
